@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Questionário Ventura</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: uma coluna estreita; formulário em cima, ficha de dados embaixo, como uma folha de questionário. */
+:root {
+  --bg: #F3F6F4; --surface: #FFFFFF; --ink: #15201C; --muted: #5A6A64; --line: #D3DCD8;
+  --accent: #0E6A58; --accent-ink: #FFFFFF; --accent-soft: #E1EFEA; --warn: #8A4B00; --warn-soft: #FBEEDD;
+  --f-sans: "IBM Plex Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0E1412; --surface: #161F1C; --ink: #E4EDE9; --muted: #98ADA5; --line: #2A3732;
+  --accent: #52B89E; --accent-ink: #062019; --accent-soft: #17312A; --warn: #F0B566; --warn-soft: #33260F; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0E1412; --surface: #161F1C; --ink: #E4EDE9; --muted: #98ADA5; --line: #2A3732;
+  --accent: #52B89E; --accent-ink: #062019; --accent-soft: #17312A; --warn: #F0B566; --warn-soft: #33260F; color-scheme: dark; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-sans); font-size: 16px; line-height: 1.5; }
+.wrap { max-width: 760px; margin: 0 auto; padding-block: 32px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+header .eyebrow { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+h1 { font-size: clamp(28px, 5vw, 38px); line-height: 1.15; margin: 6px 0 10px; font-weight: 700; text-wrap: balance; }
+h2 { font-size: 19px; margin: 0; font-weight: 600; text-wrap: balance; }
+p { margin: 0; max-width: 65ch; }
+.lead { color: var(--muted); }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; }
+.steps { display: grid; gap: 6px; padding-left: 20px; margin: 0; color: var(--muted); }
+.names { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+form { min-width: 0; }
+input[type=text] { width: 100%; }
+.name-row { display: flex; gap: 8px; align-items: center; }
+.name-row label { font-family: var(--f-mono); font-size: 13px; color: var(--muted); width: 22px; flex: none; text-align: right; }
+input[type=text] { flex: 1; min-width: 0; font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+input[type=text]:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.icon-btn { flex: none; width: 40px; height: 40px; border-radius: 8px; border: 1px solid var(--line); background: transparent; color: var(--muted); font-size: 20px; line-height: 1; cursor: pointer; }
+.icon-btn:hover { color: var(--ink); border-color: var(--muted); }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+button.primary, button.secondary { font: inherit; font-weight: 600; border-radius: 8px; padding: 10px 16px; cursor: pointer; }
+button.primary { background: var(--accent); color: var(--accent-ink); border: 1px solid var(--accent); }
+button.primary:hover { filter: brightness(1.08); }
+button.secondary { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+button.secondary:hover { background: var(--accent-soft); }
+.hint { font-size: 14px; color: var(--muted); }
+.error { font-size: 14px; color: var(--warn); background: var(--warn-soft); border-radius: 8px; padding: 8px 12px; }
+.code-form { display: flex; gap: 8px; flex-wrap: wrap; }
+.code-form input { max-width: 220px; font-family: var(--f-mono); letter-spacing: .08em; text-transform: uppercase; }
+.result-head { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between; }
+.code-box { display: grid; gap: 2px; }
+.code-box .label { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.code { font-family: var(--f-mono); font-size: 28px; font-weight: 600; letter-spacing: .12em; color: var(--accent); }
+.members { font-size: 14px; color: var(--muted); }
+.table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: 15px; }
+th, td { padding: 8px 10px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--line); }
+thead th { white-space: normal; min-width: 64px; }
+th:first-child, td:first-child { text-align: left; }
+thead th { font-size: 13px; font-weight: 600; color: var(--muted); background: var(--bg); vertical-align: bottom; }
+thead th span { display: block; font-weight: 400; }
+tbody tr:last-child td { border-bottom: 0; }
+td.ec { font-family: var(--f-mono); font-weight: 600; }
+td.empty { color: var(--muted); font-family: var(--f-mono); }
+.status { font-size: 14px; color: var(--accent); min-height: 21px; }
+textarea.fallback { width: 100%; min-height: 120px; font-family: var(--f-mono); font-size: 13px; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 8px; }
+.note { border-left: 3px solid var(--accent); padding-left: 12px; }
+@media (prefers-reduced-motion: no-preference) { .flash { animation: flash .6s ease-out; } @keyframes flash { from { background: var(--accent-soft); } to { background: transparent; } } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">IBM0043 · Pesquisa Operacional · Avaliação Continuada 2</div>
+    <h1>Questionário Ventura</h1>
+    <p class="lead">Cada grupo recebe respostas diferentes de Helena, Marcos e Paula ao questionário de equivalentes certos. Digite os nomes dos integrantes para gerar os dados do seu grupo.</p>
+  </header>
+
+  <section class="panel" aria-labelledby="t-integrantes">
+    <h2 id="t-integrantes">Integrantes do grupo</h2>
+    <ol class="steps">
+      <li>Escreva o nome completo de cada integrante, do jeito que ele vai aparecer no relatório.</li>
+      <li>Clique em <strong>Gerar dados do grupo</strong>.</li>
+      <li>Anote o código do grupo e copie a tabela para o Excel.</li>
+    </ol>
+    <form id="form-nomes" novalidate>
+      <div class="names" id="names"></div>
+      <div class="row" style="margin-top:12px">
+        <button type="button" class="secondary" id="add">Adicionar integrante</button>
+        <button type="submit" class="primary" id="gerar">Gerar dados do grupo</button>
+      </div>
+    </form>
+    <p class="hint">A ordem dos nomes, acentos e letras maiúsculas não mudam os dados. Uma letra a mais ou a menos muda: o grupo inteiro deve usar os mesmos nomes.</p>
+    <p class="error" id="err-nomes" hidden></p>
+  </section>
+
+  <section class="panel" aria-labelledby="t-codigo">
+    <h2 id="t-codigo">Já tem o código do grupo?</h2>
+    <form class="code-form" id="form-codigo" novalidate>
+      <label for="codigo" class="hint" style="width:100%">Digite o código de 8 caracteres para ver de novo os mesmos dados.</label>
+      <input type="text" id="codigo" maxlength="12" autocomplete="off" spellcheck="false" placeholder="Ex.: 7K3QX9FD">
+      <button type="submit" class="secondary">Recuperar dados</button>
+    </form>
+    <p class="error" id="err-codigo" hidden></p>
+  </section>
+
+  <section class="panel" id="resultado" aria-labelledby="t-dados" aria-live="polite">
+    <div class="result-head">
+      <div class="code-box">
+        <span class="label">Código do grupo</span>
+        <span class="code" id="out-codigo">— — — —</span>
+      </div>
+      <div class="row">
+        <button type="button" class="secondary" id="copiar-codigo" disabled>Copiar código</button>
+        <button type="button" class="primary" id="copiar" disabled>Copiar tabela para o Excel</button>
+      </div>
+    </div>
+    <h2 id="t-dados">Respostas do questionário (R$ milhões)</h2>
+    <p class="members" id="out-membros">Os equivalentes certos aparecem aqui depois que você gerar os dados do grupo.</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Loteria</th>
+            <th>p<span>prob. do pior</span></th>
+            <th>a<span>pior resultado</span></th>
+            <th>b<span>melhor resultado</span></th>
+            <th>EC Helena<span>fundadora e CEO</span></th>
+            <th>EC Marcos<span>diretor financeiro</span></th>
+            <th>EC Paula<span>representante do fundo</span></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <p class="status" id="status" role="status"></p>
+    <textarea class="fallback" id="fallback" hidden readonly aria-label="Tabela em texto para copiar"></textarea>
+    <p class="hint note">No Excel, clique na célula A1 de uma aba nova e cole (Ctrl+V). Escreva o código do grupo e os nomes dos integrantes na primeira página do relatório.</p>
+  </section>
+</div>
+<script>
+(function () {
+// Gerador de dados da AC2 (Ventura Alimentos) — determinístico a partir do código do grupo.
+// Mesmos critérios de aceitação usados na versão Python (gabarito.py / pool.py).
+const Gen = (() => {
+  const LOT = [[0.50, 0, 10], [0.50, 20, 30], [0.50, -5, 5], [0.50, -10, 30], [0.50, 0, 40],
+               [0.50, 20, 60], [0.25, 0, 20], [0.75, 0, 20], [0.50, -10, 10], [0.10, -10, 10]];
+  const XMIN = -10;
+  const PROJ = { A: [[0.4, 0.3, 0.3], [55, 20, -10]], B: [[0.5, 0.5], [40, 3]], C: [[0.8, 0.2], [14, 10]] };
+  const SEG = { q: 0.04, L: 15, premio: 0.75 };
+  const ARV = { pF: 0.6, G: 40, Lz: 8, s: 0.85, f: 0.25, c: 1.0 };
+  const NOMES = ['helena', 'marcos', 'paula'];
+
+  // ---------- hash, código e gerador pseudoaleatório ----------
+  function cyrb53(str, seed = 0) {
+    let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+    for (let i = 0; i < str.length; i++) {
+      const ch = str.charCodeAt(i);
+      h1 = Math.imul(h1 ^ ch, 2654435761); h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    return [h1 >>> 0, h2 >>> 0];
+  }
+  const B32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ'; // Crockford, sem I L O U
+  function normalizarNome(n) {
+    return n.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  function chaveNomes(lista) {
+    return lista.map(normalizarNome).filter(Boolean).sort().join('|');
+  }
+  function codigoDeNomes(lista) {
+    const [h1, h2] = cyrb53('ventura-ac2|' + chaveNomes(lista));
+    let x = BigInt(h1) * 4294967296n + BigInt(h2), s = '';
+    for (let i = 0; i < 8; i++) { s = B32[Number(x % 32n)] + s; x /= 32n; }
+    return s;
+  }
+  function normalizarCodigo(c) {
+    return c.toUpperCase().replace(/[^0-9A-Z]/g, '').replace(/O/g, '0').replace(/[IL]/g, '1');
+  }
+  function codigoValido(c) {
+    return /^[0-9A-HJKMNP-TV-Z]{8}$/.test(c);
+  }
+  function sfc32(a, b, c, d) {
+    return function () {
+      a >>>= 0; b >>>= 0; c >>>= 0; d >>>= 0;
+      let t = (a + b) | 0; a = b ^ (b >>> 9); b = (c + (c << 3)) | 0;
+      c = (c << 21) | (c >>> 11); d = (d + 1) | 0; t = (t + d) | 0; c = (c + t) | 0;
+      return (t >>> 0) / 4294967296;
+    };
+  }
+  function rngDe(str) {
+    const [a, b] = cyrb53(str, 1), [c, d] = cyrb53(str, 2);
+    const r = sfc32(a, b, c, d);
+    for (let i = 0; i < 15; i++) r();
+    return r;
+  }
+
+  // ---------- modelos ----------
+  function ceExp(R, p, x) {
+    const m = Math.min(...x); let s = 0;
+    for (let k = 0; k < p.length; k++) s += p[k] * Math.exp(-(x[k] - m) / R);
+    return m - R * Math.log(s);
+  }
+  function ceLog(C, p, x) {
+    let s = 0;
+    for (let k = 0; k < p.length; k++) s += p[k] * Math.log(C + x[k]);
+    return Math.exp(s) - C;
+  }
+  function ce(fam, v, p, x) {
+    if (fam === 'exp') return ceExp(v, p, x);
+    if (fam === 'log') return ceLog(v, p, x);
+    let s = 0; for (let k = 0; k < p.length; k++) s += p[k] * x[k]; return s;
+  }
+  const ceLotExp = R => LOT.map(([p, a, b]) => ceExp(R, [p, 1 - p], [a, b]));
+  const ceLotLog = C => LOT.map(([p, a, b]) => ceLog(C, [p, 1 - p], [a, b]));
+
+  // ---------- ajuste (grade + seção áurea) ----------
+  const geom = (a, b, n) => Array.from({ length: n }, (_, i) => a * Math.pow(b / a, i / (n - 1)));
+  const GR = geom(1, 2000, 400), GC = geom(0.05, 2000, 400).map(v => v - XMIN);
+  function aurea(f, a, b, tol = 1e-9) {
+    const g = (Math.sqrt(5) - 1) / 2;
+    let c = b - g * (b - a), d = a + g * (b - a), fc = f(c), fd = f(d);
+    while (Math.abs(b - a) > tol * (1 + Math.abs(a))) {
+      if (fc < fd) { b = d; d = c; fd = fc; c = b - g * (b - a); fc = f(c); }
+      else { a = c; c = d; fc = fd; d = a + g * (b - a); fd = f(d); }
+    }
+    const x = (a + b) / 2; return [x, f(x)];
+  }
+  function ajuste1(sse, grade) {
+    const s = grade.map(sse);
+    let i = 0; for (let k = 1; k < s.length; k++) if (s[k] < s[i]) i = k;
+    let nloc = 0; for (let k = 1; k < s.length - 1; k++) if (s[k] < s[k - 1] && s[k] < s[k + 1]) nloc++;
+    const borda = i === 0 || i === s.length - 1;
+    const [x, fx] = aurea(sse, grade[Math.max(i - 1, 0)], grade[Math.min(i + 1, s.length - 1)]);
+    return { x, sse: fx, nloc, borda };
+  }
+  function ajustar(obs, mask) {
+    const sseE = R => { const e = ceLotExp(R); let s = 0; for (let i = 0; i < 10; i++) if (mask[i]) s += (obs[i] - e[i]) ** 2; return s; };
+    const sseL = C => { const e = ceLotLog(C); let s = 0; for (let i = 0; i < 10; i++) if (mask[i]) s += (obs[i] - e[i]) ** 2; return s; };
+    const e = ajuste1(sseE, GR), l = ajuste1(sseL, GC);
+    return { R: e.x, sse_e: e.sse, C: l.x, sse_l: l.sse, ok: e.nloc === 1 && l.nloc === 1 && !e.borda && !l.borda };
+  }
+
+  // ---------- situações ----------
+  function projetos(fam, v) {
+    const ec = {}; for (const k in PROJ) ec[k] = ce(fam, v, PROJ[k][0], PROJ[k][1]);
+    const ord = Object.keys(ec).sort((a, b) => ec[b] - ec[a]);
+    return { ec, escolha: ord[0], margem: ec[ord[0]] - ec[ord[1]] };
+  }
+  function seguro(fam, v) {
+    const pmax = -ce(fam, v, [SEG.q, 1 - SEG.q], [-SEG.L, 0]);
+    return { pmax, compra: pmax > SEG.premio, margem: Math.abs(pmax - SEG.premio) };
+  }
+  function arvore(fam, v) {
+    const { pF, G, Lz, s, f, c } = ARV;
+    const pp = s * pF + f * (1 - pF), pFp = s * pF / pp, pFn = (1 - s) * pF / (1 - pp);
+    const ceLancSem = ce(fam, v, [pF, 1 - pF], [G, -Lz]), ceSem = Math.max(ceLancSem, 0);
+    function comTeste(cc) {
+      const pr = [], xs = [], marg = [];
+      for (const [prR, pfR] of [[pp, pFp], [1 - pp, pFn]]) {
+        const lanc = ce(fam, v, [pfR, 1 - pfR], [G - cc, -Lz - cc]), nao = -cc;
+        marg.push(lanc - nao);
+        if (lanc > nao) { pr.push(pfR * prR, (1 - pfR) * prR); xs.push(G - cc, -Lz - cc); }
+        else { pr.push(prR); xs.push(-cc); }
+      }
+      return { ce: ce(fam, v, pr, xs), marg };
+    }
+    const t = comTeste(c);
+    let lo = -5, hi = fam === 'log' ? Math.min(30, v - Lz - 1e-6) : 30;
+    const g = cc => comTeste(cc).ce - ceSem;
+    for (let k = 0; k < 200; k++) { const m = (lo + hi) / 2; if (g(m) > 0) lo = m; else hi = m; }
+    const voi = (lo + hi) / 2;
+    return { ceLancSem, voi, testa: t.ce > ceSem, margRamos: t.marg };
+  }
+
+  // ---------- geração com rejeição ----------
+  function candidato(rng) {
+    const u = (a, b) => a + (b - a) * rng();
+    const normal = () => { let x = 0; while (x === 0) x = rng(); return Math.sqrt(-2 * Math.log(x)) * Math.cos(2 * Math.PI * rng()); };
+    const Ch = u(18, 30), Rm = u(8, 14), Rp = u(70, 110);
+    const verd = { helena: ceLotLog(Ch), marcos: ceLotExp(Rm), paula: ceLotExp(Rp) };
+    const dados = {};
+    for (const k of NOMES) {
+      dados[k] = verd[k].map((v, i) => {
+        const [, a, b] = LOT[i];
+        const o = Math.round((v + 0.015 * (b - a) * normal()) * 10) / 10;
+        return Math.min(Math.max(o, a + 0.1), b - 0.1);
+      });
+    }
+    const quem = NOMES[Math.floor(rng() * 3)];
+    const cand = [];
+    for (let i = 0; i < 10; i++) { const [, a, b] = LOT[i]; if (a >= 0 && 10 * dados[quem][i] > b && dados[quem][i] > 0.5) cand.push(i); }
+    const i = cand[Math.floor(rng() * cand.length)];
+    dados[quem][i] = Math.round(dados[quem][i] * 100) / 10;
+    return { dados, outlier: [quem, i] };
+  }
+  function aceita(cd) {
+    const fit = {};
+    for (const k of NOMES) {
+      const obs = cd.dados[k], mask = obs.map((o, i) => o >= LOT[i][1] && o <= LOT[i][2]);
+      if ((k === cd.outlier[0]) !== mask.includes(false)) return null;
+      fit[k] = ajustar(obs, mask);
+      if (!fit[k].ok) return null;
+    }
+    if (!(fit.helena.sse_l < 0.4 * fit.helena.sse_e && fit.marcos.sse_e < 0.1 * fit.marcos.sse_l)) return null;
+    if (!(fit.helena.C >= 18 && fit.helena.C <= 30 && fit.paula.R >= 65 && fit.paula.R <= 130 && fit.paula.C >= 50 && fit.paula.C <= 120)) return null;
+    const M = [['log', fit.helena.C, 'B', true], ['exp', fit.marcos.R, 'C', true], ['exp', fit.paula.R, 'A', false], ['log', fit.paula.C, 'A', false]];
+    for (const [fam, v, proj, compra] of M) {
+      const p = projetos(fam, v), s = seguro(fam, v), a = arvore(fam, v);
+      if (p.escolha !== proj || p.margem < 0.3) return null;
+      if (s.compra !== compra || s.margem < 0.03) return null;
+      if (Math.abs(a.ceLancSem) < 0.1 || Math.abs(a.voi - ARV.c) < 0.1 || Math.min(...a.margRamos.map(Math.abs)) < 0.1) return null;
+    }
+    return fit;
+  }
+  function gerar(codigo) {
+    for (let k = 0; k < 5000; k++) {
+      const cd = candidato(rngDe('ventura-ac2|' + codigo + '#' + k));
+      const fit = aceita(cd);
+      if (fit) return { codigo, dados: cd.dados };
+    }
+    throw new Error('sem candidato');
+  }
+  return { LOT, gerar, codigoDeNomes, normalizarNome, normalizarCodigo, codigoValido, chaveNomes };
+})();
+if (typeof module !== 'undefined') module.exports = Gen;
+
+(function () {
+  const $ = id => document.getElementById(id);
+  const fmt = (v, casas) => v.toFixed(casas).replace('.', ',').replace(/^-0(,0+)?$/, '0$1');
+  const names = $('names');
+  let ultimo = null;
+
+  function addName(valor) {
+    const n = names.children.length + 1;
+    if (n > 8) return;
+    const row = document.createElement('div');
+    row.className = 'name-row';
+    row.innerHTML = '<label></label><input type="text" autocomplete="off"><button type="button" class="icon-btn" aria-label="Remover integrante">×</button>';
+    const input = row.querySelector('input');
+    input.id = 'nome-' + n; input.value = valor || ''; input.placeholder = 'Nome completo';
+    row.querySelector('label').htmlFor = input.id;
+    row.querySelector('button').addEventListener('click', () => { if (names.children.length > 1) { row.remove(); renumerar(); } else { input.value = ''; } });
+    names.appendChild(row);
+    renumerar();
+    return input;
+  }
+  function renumerar() {
+    [...names.children].forEach((row, i) => {
+      row.querySelector('label').textContent = (i + 1) + '.';
+      const input = row.querySelector('input');
+      input.id = 'nome-' + (i + 1); row.querySelector('label').htmlFor = input.id;
+      input.setAttribute('aria-label', 'Integrante ' + (i + 1));
+    });
+    $('add').disabled = names.children.length >= 8;
+  }
+  for (let i = 0; i < 3; i++) addName();
+  $('add').addEventListener('click', () => { const inp = addName(); if (inp) inp.focus(); });
+
+  function renderVazio() {
+    $('tbody').innerHTML = Gen.LOT.map(([p, a, b], i) =>
+      `<tr><td>L${i + 1}</td><td>${fmt(p, 2)}</td><td>${a}</td><td>${b}</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>`).join('');
+  }
+  function render(res, membros) {
+    ultimo = res;
+    $('out-codigo').textContent = res.codigo;
+    $('out-membros').textContent = membros && membros.length ? 'Integrantes: ' + membros.join(', ') + '.' : 'Dados recuperados pelo código.';
+    $('tbody').innerHTML = Gen.LOT.map(([p, a, b], i) =>
+      `<tr><td>L${i + 1}</td><td>${fmt(p, 2)}</td><td>${a}</td><td>${b}</td>` +
+      ['helena', 'marcos', 'paula'].map(k => `<td class="ec">${fmt(res.dados[k][i], 1)}</td>`).join('') + '</tr>').join('');
+    $('copiar').disabled = false; $('copiar-codigo').disabled = false;
+    $('status').textContent = ''; $('fallback').hidden = true;
+    const sec = $('resultado'); sec.classList.remove('flash'); void sec.offsetWidth; sec.classList.add('flash');
+    sec.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  }
+  function tsv(res) {
+    const linhas = [['Loteria', 'p', 'a', 'b', 'EC Helena', 'EC Marcos', 'EC Paula'].join('\t')];
+    Gen.LOT.forEach(([p, a, b], i) => linhas.push([`L${i + 1}`, fmt(p, 2), a, b, ...['helena', 'marcos', 'paula'].map(k => fmt(res.dados[k][i], 1))].join('\t')));
+    return linhas.join('\n');
+  }
+  function copiar(texto, ok) {
+    const falhou = () => {
+      const ta = $('fallback'); ta.value = texto; ta.hidden = false; ta.focus(); ta.select();
+      $('status').textContent = 'Não foi possível copiar automaticamente. O texto abaixo já está selecionado: use Ctrl+C.';
+    };
+    try {
+      navigator.clipboard.writeText(texto).then(() => { $('status').textContent = ok; $('fallback').hidden = true; }, falhou);
+    } catch (e) { falhou(); }
+  }
+  $('copiar').addEventListener('click', () => { if (ultimo) copiar(tsv(ultimo), 'Tabela copiada. Cole no Excel com Ctrl+V.'); });
+  $('copiar-codigo').addEventListener('click', () => { if (ultimo) copiar(ultimo.codigo, 'Código copiado.'); });
+
+  $('form-nomes').addEventListener('submit', ev => {
+    ev.preventDefault();
+    const err = $('err-nomes'); err.hidden = true;
+    const brutos = [...names.querySelectorAll('input')].map(i => i.value.trim().replace(/\s+/g, ' ')).filter(Boolean);
+    if (!brutos.length) { err.textContent = 'Escreva o nome de pelo menos um integrante.'; err.hidden = false; return; }
+    const curtos = brutos.filter(n => Gen.normalizarNome(n).split(' ').length < 2);
+    if (curtos.length) { err.textContent = 'Use nome e sobrenome para cada integrante. Confira: ' + curtos.join(', ') + '.'; err.hidden = false; return; }
+    const vistos = new Set(), repetidos = [];
+    brutos.forEach(n => { const k = Gen.normalizarNome(n); if (vistos.has(k)) repetidos.push(n); vistos.add(k); });
+    if (repetidos.length) { err.textContent = 'Há nomes repetidos: ' + repetidos.join(', ') + '. Deixe cada integrante uma vez só.'; err.hidden = false; return; }
+    const codigo = Gen.codigoDeNomes(brutos);
+    render(Gen.gerar(codigo), brutos);
+    $('codigo').value = codigo;
+  });
+
+  $('form-codigo').addEventListener('submit', ev => {
+    ev.preventDefault();
+    const err = $('err-codigo'); err.hidden = true;
+    const c = Gen.normalizarCodigo($('codigo').value);
+    if (!Gen.codigoValido(c)) { err.textContent = 'O código tem 8 caracteres, com letras e números (por exemplo, 7K3QX9FD). Confira e tente de novo.'; err.hidden = false; return; }
+    render(Gen.gerar(c), null);
+  });
+
+  renderVazio();
+})();
+})();
+</script>
+</body>
+</html>
